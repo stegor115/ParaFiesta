@@ -24,15 +24,15 @@ APlayerAvatar::APlayerAvatar()
 	//Camera Boom (Big stick that keeps camera away)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 300.0f; //Length of the "stick"
-	CameraBoom->bUsePawnControlRotation = true; //Allows the mouse to rotate the stick relative to the player
+	CameraBoom->TargetArmLength = 800.0f; //Length of the "stick"
+	CameraBoom->bUsePawnControlRotation = false; //Stops stick from moving for top down view
 
-												//Camera
+	//Camera
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); //Attach camera to the end of the stick of the boom
 	Camera->bUsePawnControlRotation = false; //Prevents camera itself from rotating.
 
-											 //Cube
+	//Cube
 	SpawnerCube = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpawnerCube"));
 	SpawnerCube->SetupAttachment(RootComponent);
 }
@@ -66,8 +66,6 @@ void APlayerAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAxis("MoveLeft", this, &APlayerAvatar::MoveLeft);
 	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerAvatar::MoveRight);
 	//Mouse Turning
-	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 }
 
 //Camera Handling--------------------------------------------------------------
