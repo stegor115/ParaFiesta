@@ -15,7 +15,7 @@ APlayerAvatar::APlayerAvatar()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//Character Movement
+	//Character Movement (Taken from ThirdPersonProject Starter Code)
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
 	GetCharacterMovement()->JumpZVelocity = 600.f;
@@ -28,7 +28,7 @@ APlayerAvatar::APlayerAvatar()
 	CameraBoom->bUsePawnControlRotation = false; //Stops stick from moving for top down view
 
 	//Camera
-	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
 	Camera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); //Attach camera to the end of the stick of the boom
 	Camera->bUsePawnControlRotation = false; //Prevents camera itself from rotating.
 
