@@ -80,6 +80,9 @@ void APlayerAvatar::ZoomIn()
 	if (CameraBoom->TargetArmLength > MIN_CAMERA_DISTANCE) {
 		CameraBoom->TargetArmLength -= 10.0f;
 	} //end if
+	
+	//TESTING SKELETON MESH SWAP
+
 }
 //Movement---------------------------------------------------------------------
 void APlayerAvatar::MoveForward(float value)

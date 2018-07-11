@@ -43,7 +43,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	void load(int playerNum, ); // Add argument to get Player Number, and one to figure out the character selected
 	
 	
 };
