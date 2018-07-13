@@ -73,7 +73,7 @@ void APlayerTrophy::Tick(float DeltaTime)
 
 }
 
-void load() {
+void load(int playerNum) {
 	//MAKE A SWITCH CASE SO ALL OF THESE DON'T HAPPEN!!!!!!!!! SIMPLY USE THE MESS BELOW FOR EASY COPY PASTE
 	//Skins will be added later.
 	ConstructorHelpers::FObjectFinder<USkeletalMesh>SkeleCountessDefault(TEXT("SkeletalMesh'/Game/ParagonCountess/Characters/Heroes/Countess/Meshes/SM_Countess.SM_Countess''")); //Countess
