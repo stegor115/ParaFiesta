@@ -39,6 +39,10 @@ APlayerTrophy::APlayerTrophy()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("TrophyCamera"));
 	Camera->SetupAttachment(RootComponent);
 	Camera->SetRelativeLocation(FVector(-310.0f, 0.0f, 160.0f));
+
+	TallCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("TallCamera"));
+	TallCamera->SetupAttachment(RootComponent);
+	TallCamera->SetRelativeLocation(FVector(-310.0f, 0.0f, 230.0f));
 	/*
 	//Find ALL Skeletons here.
 	//Skins will be added later.
