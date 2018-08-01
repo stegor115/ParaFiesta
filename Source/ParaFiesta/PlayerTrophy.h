@@ -9,25 +9,24 @@
 UENUM(BlueprintType)
 enum class ESelectedChar : uint8
 {
-	SC_Countess UMETA(DisplayName = "Countess"),
-	SC_Dekker UMETA(DisplayName = "Dekker"),
-	SC_FengMao UMETA(DisplayName = "Feng Mao"),
-	SC_Gadget UMETA(DisplayName = "Gadget"),
-	SC_Grim UMETA(DisplayName = "Grim"),
-	SC_Grux UMETA(DisplayName = "Grux"),
-	SC_Howitzer UMETA(DisplayName = "Howitzer"),
-	SC_Khaimera UMETA(DisplayName = "Khaimera"),
-	SC_Kwang UMETA(DisplayName = "Kwang"),
-	SC_Murdock UMETA(DisplayName = "Murdock"),
-	SC_Muriel UMETA(DisplayName = "Muriel"),
-	SC_Phase UMETA(DisplayName="Phase"),
-	SC_Rampage UMETA(DisplayName = "Rampage"),
-	SC_Riktor UMETA(DisplayName = "Riktor"),
-	SC_Serath UMETA(DisplayName = "Serath"),
-	SC_Sevarog UMETA(DisplayName = "Sevarog"),
-	SC_Shinbi UMETA(DisplayName = "Shinbi"),
-	SC_Twinblast UMETA(DisplayName = "Twinblast"),
-	SC_Test UMETA(DisplayName = "test") //This is here because Twinblast wouldn't work for some reason without it.
+	SC_Countess UMETA(DisplayName = "Countess"), //0
+	SC_Dekker UMETA(DisplayName = "Dekker"), //1
+	SC_FengMao UMETA(DisplayName = "Feng Mao"), //2
+	SC_Gadget UMETA(DisplayName = "Gadget"), //3
+	SC_Grim UMETA(DisplayName = "Grim"), //4
+	SC_Grux UMETA(DisplayName = "Grux"), //5
+	SC_Howitzer UMETA(DisplayName = "Howitzer"), //6
+	SC_Khaimera UMETA(DisplayName = "Khaimera"), //7
+	SC_Kwang UMETA(DisplayName = "Kwang"), //8
+	SC_Murdock UMETA(DisplayName = "Murdock"), //9
+	SC_Muriel UMETA(DisplayName = "Muriel"), //10
+	SC_Phase UMETA(DisplayName="Phase"), //11
+	SC_Rampage UMETA(DisplayName = "Rampage"), //12
+	SC_Riktor UMETA(DisplayName = "Riktor"), //13
+	SC_Serath UMETA(DisplayName = "Serath"), //14
+	SC_Sevarog UMETA(DisplayName = "Sevarog"), //15
+	SC_Shinbi UMETA(DisplayName = "Shinbi"), //16
+	SC_Twinblast UMETA(DisplayName = "Twinblast") //17
 };
 
 UCLASS()
@@ -72,7 +71,11 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	void load(int playerNum); // Add argument to get Player Number, and one to figure out the character selected
+	//Loading characters in
+	UFUNCTION(BlueprintCallable, Category="Character")
+	void startLoadChoice(int playerNum, ESelectedChar playerChoice); // Add argument to get Player Number, and one to figure out the character selected
+
+	USkeletalMeshComponent* getPlayerMesh(int playerNum);
 	
 	
 };
