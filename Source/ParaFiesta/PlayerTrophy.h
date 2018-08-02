@@ -74,8 +74,29 @@ public:
 	//Loading characters in
 	UFUNCTION(BlueprintCallable, Category="Character")
 	void startLoadChoice(int playerNum, ESelectedChar playerChoice); // Add argument to get Player Number, and one to figure out the character selected
+	void finalLoadChoice();
 
-	USkeletalMeshComponent* getPlayerMesh(int playerNum);
+	//All character load functions, this is needed because it is not possible to initialize variables in a switch case statement
+	void loadCountess(USkeletalMeshComponent* playerMesh);
+	void loadDekker(USkeletalMeshComponent* playerMesh);
+	void loadFengMao(USkeletalMeshComponent* playerMesh);
+	void loadGadget(USkeletalMeshComponent* playerMesh);
+	void loadGrim(USkeletalMeshComponent* playerMesh);
+	void loadGrux(USkeletalMeshComponent* playerMesh);
+	void loadHowitzer(USkeletalMeshComponent* playerMesh);
+	void loadKhaimera(USkeletalMeshComponent* playerMesh);
+	void loadKwang(USkeletalMeshComponent* playerMesh);
+	void loadMurdock(USkeletalMeshComponent* playerMesh);
+	void loadMuriel(USkeletalMeshComponent* playerMesh);
+	void loadPhase(USkeletalMeshComponent* playerMesh);
+	void loadRampage(USkeletalMeshComponent* playerMesh);
+	void loadRiktor(USkeletalMeshComponent* playerMesh);
+	void loadSerath(USkeletalMeshComponent* playerMesh);
+	void loadSevarog(USkeletalMeshComponent* playerMesh);
+	void loadShinbi(USkeletalMeshComponent* playerMesh);
+	void loadTwinblast(USkeletalMeshComponent* playerMesh);
+
+	USkeletalMeshComponent* getPlayerMesh(int playerNum); //Retrives correct player's mesh component
 	
 	
 };
