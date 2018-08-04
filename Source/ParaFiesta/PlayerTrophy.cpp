@@ -1,11 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PlayerTrophy.h"
+//Components
 #include "Components/SkeletalMeshComponent.h"
-//Need to include USkeletalMesh
 #include "Components/SceneComponent.h"
 #include "Camera/CameraComponent.h"
-#include "Sound/SoundCue.h"
+//Stuff for components to use
+#include "Engine/SkeletalMesh.h"
+#include "Animation/AnimBlueprint.h"
+#include "Animation/AnimSequence.h"
+//SoundCue goes in the header file for some reason
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 
 
@@ -128,7 +132,9 @@ void APlayerTrophy::startLoadChoice(int playerNum, ESelectedChar playerChoice) {
 	} //end switch
 } //end startLoadChoice
 
-void APlayerTrophy::finalLoadChoice() { //Pass in skeleton, animation blueprint, sound, level start animation, idle animation
+void APlayerTrophy::finalLoadChoice(USkeletalMeshComponent* playerMesh, USkeletalMesh* skeleton, UAnimBlueprint* animBlueprint, 
+									USoundCue* soundIntro, UAnimSequence* animLevelStart, UAnimSequence* animIdle)
+{ //Pass in skeleton, animation blueprint, sound, level start animation, idle animation
 	//TO:DO pass all LoadCharacter to this function and set parameters to pass all the found data in to load it all
 } //end finalLoadChoice
 
@@ -143,7 +149,7 @@ void APlayerTrophy::loadCountess(USkeletalMeshComponent* playerMesh) {
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartCountess(TEXT("AnimSequence'/Game/ParagonCountess/Characters/Heroes/Countess/Animations/LevelStart.LevelStart'"));
 	//Idle Animation
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdleCountess(TEXT("AnimSequence'/Game/ParagonCountess/Characters/Heroes/Countess/Animations/Idle_Relaxed.Idle_Relaxed'"));
-
+	finalLoadChoice(playerMesh, SkeleCountessDefault.Object, BP_AnimCountess.Object, SoundCountess.Object, AnimLevelStartCountess.Object, AnimIdleCountess.Object); //TO-DO: Copy this to all other characters
 } //end Countess
 
 void APlayerTrophy::loadDekker(USkeletalMeshComponent* playerMesh) {

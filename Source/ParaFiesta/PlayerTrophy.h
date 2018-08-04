@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Sound/SoundCue.h"
 #include "PlayerTrophy.generated.h"
 
 UENUM(BlueprintType)
@@ -74,7 +75,7 @@ public:
 	//Loading characters in
 	UFUNCTION(BlueprintCallable, Category="Character")
 	void startLoadChoice(int playerNum, ESelectedChar playerChoice); // Add argument to get Player Number, and one to figure out the character selected
-	void finalLoadChoice();
+	void finalLoadChoice(USkeletalMeshComponent* playerMesh, USkeletalMesh* skeleton, UAnimBlueprint* animBlueprint, USoundCue* soundIntro, UAnimSequence* animLevelStart, UAnimSequence* animIdle);
 
 	//All character load functions, this is needed because it is not possible to initialize variables in a switch case statement
 	void loadCountess(USkeletalMeshComponent* playerMesh);
