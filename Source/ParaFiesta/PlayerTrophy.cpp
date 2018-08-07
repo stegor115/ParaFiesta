@@ -11,6 +11,7 @@
 #include "Animation/AnimSequence.h"
 //SoundCue goes in the header file for some reason
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
+#include "Kismet/GameplayStatics.h" //Used to play 2D sounds
 
 
 // Sets default values
@@ -105,7 +106,7 @@ void APlayerTrophy::startLoadChoice(int playerNum, ESelectedChar playerChoice) {
 	case ESelectedChar::SC_Muriel:
 		loadMuriel(playerMesh);
 		break;
-	case ESelectedChar::SC_Phase:
+	case ESelectedChar::SC_Phase: //Used for Debugging
 		loadPhase(playerMesh);
 		break;
 	case ESelectedChar::SC_Rampage:
@@ -127,7 +128,7 @@ void APlayerTrophy::startLoadChoice(int playerNum, ESelectedChar playerChoice) {
 		loadTwinblast(playerMesh);
 		break;
 	default:
-		//Something very bad happened if you got here
+		UE_LOG(LogTemp, Warning, TEXT("Default case reached, DEBUG THIS"));
 		break;
 	} //end switch
 } //end startLoadChoice
@@ -135,21 +136,30 @@ void APlayerTrophy::startLoadChoice(int playerNum, ESelectedChar playerChoice) {
 void APlayerTrophy::finalLoadChoice(USkeletalMeshComponent* playerMesh, USkeletalMesh* skeleton, UAnimBlueprint* animBlueprint, 
 									USoundCue* soundIntro, UAnimSequence* animLevelStart, UAnimSequence* animIdle)
 { //Pass in skeleton, animation blueprint, sound, level start animation, idle animation
-	//TO:DO pass all LoadCharacter to this function and set parameters to pass all the found data in to load it all
+	playerMesh->SetSkeletalMesh(skeleton); //Skeleton
+	playerMesh->SetAnimInstanceClass(animBlueprint->GeneratedClass); //Animation Blueprint
+	UGameplayStatics::PlaySound2D(this->GetWorld(), soundIntro, 1.0f, 1.0f, 0.0f); //Sound
+	playerMesh->PlayAnimation(animLevelStart, false);
+
 } //end finalLoadChoice
 
-void APlayerTrophy::loadCountess(USkeletalMeshComponent* playerMesh) {
+void APlayerTrophy::loadCountess(USkeletalMeshComponent* playerMesh) { //TO-DO: Edit Blueprint in UI
 	//Skeleton
-	ConstructorHelpers::FObjectFinder<USkeletalMesh>SkeleCountessDefault(TEXT("SkeletalMesh'/Game/ParagonCountess/Characters/Heroes/Countess/Meshes/SM_Countess.SM_Countess''"));
+	USkeletalMesh* SkeleCountessDefault = Cast<USkeletalMesh>(StaticLoadObject(USkeletalMesh::StaticClass(), NULL,
+		TEXT("SkeletalMesh'/Game/ParagonCountess/Characters/Heroes/Countess/Meshes/SM_Countess.SM_Countess'")));
 	//Animation Blueprint
-	ConstructorHelpers::FObjectFinder<UAnimBlueprint>BP_AnimCountess(TEXT("AnimBlueprint'/Game/ParagonCountess/Characters/Heroes/Countess/Countess_AnimBlueprint.Countess_AnimBlueprint'"));
+	UAnimBlueprint* BP_AnimCountess = Cast<UAnimBlueprint>(StaticLoadObject(UAnimBlueprint::StaticClass(), NULL,
+		TEXT("AnimBlueprint'/Game/ParagonCountess/Characters/Heroes/Countess/Countess_AnimBlueprint.Countess_AnimBlueprint'")));
 	//Sound
-	ConstructorHelpers::FObjectFinder<USoundCue>SoundCountess(TEXT("SoundCue'/Game/ParagonCountess/Characters/Heroes/Countess/Sounds/SoundCues/Countess_Intro_Statement.Countess_Intro_Statement'"));
+	USoundCue* SoundCountess = Cast<USoundCue>(StaticLoadObject(USoundCue::StaticClass(), NULL,
+		TEXT("SoundCue'/Game/ParagonCountess/Characters/Heroes/Countess/Sounds/SoundCues/Countess_Intro_Statement.Countess_Intro_Statement'")));
 	//Level Start Animation
-	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartCountess(TEXT("AnimSequence'/Game/ParagonCountess/Characters/Heroes/Countess/Animations/LevelStart.LevelStart'"));
+	UAnimSequence* AnimLevelStartCountess = Cast<UAnimSequence>(StaticLoadObject(UAnimSequence::StaticClass(), NULL,
+		TEXT("AnimSequence'/Game/ParagonCountess/Characters/Heroes/Countess/Animations/LevelStart.LevelStart'")));
 	//Idle Animation
-	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdleCountess(TEXT("AnimSequence'/Game/ParagonCountess/Characters/Heroes/Countess/Animations/Idle_Relaxed.Idle_Relaxed'"));
-	finalLoadChoice(playerMesh, SkeleCountessDefault.Object, BP_AnimCountess.Object, SoundCountess.Object, AnimLevelStartCountess.Object, AnimIdleCountess.Object); //TO-DO: Copy this to all other characters
+	UAnimSequence* AnimIdleCountess = Cast<UAnimSequence>(StaticLoadObject(UAnimSequence::StaticClass(), NULL,
+		TEXT("AnimSequence'/Game/ParagonCountess/Characters/Heroes/Countess/Animations/Idle_Relaxed.Idle_Relaxed'")));
+	finalLoadChoice(playerMesh, SkeleCountessDefault, BP_AnimCountess, SoundCountess, AnimLevelStartCountess, AnimIdleCountess);
 } //end Countess
 
 void APlayerTrophy::loadDekker(USkeletalMeshComponent* playerMesh) {
@@ -163,6 +173,7 @@ void APlayerTrophy::loadDekker(USkeletalMeshComponent* playerMesh) {
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartDekker(TEXT("AnimSequence'/Game/ParagonDekker/Characters/Heroes/Dekker/Animations/LevelStart.LevelStart'"));
 	//Idle Animation
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdleDekker(TEXT("AnimSequence'/Game/ParagonDekker/Characters/Heroes/Dekker/Animations/Idle.Idle'"));
+	finalLoadChoice(playerMesh, SkeleDekkerDefault.Object, BP_AnimDekker.Object, SoundDekker.Object, AnimLevelStartDekker.Object, AnimIdleDekker.Object);
 } //end Dekker
 
 
@@ -177,6 +188,7 @@ void APlayerTrophy::loadFengMao(USkeletalMeshComponent* playerMesh) {
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartFengMao(TEXT("AnimSequence'/Game/ParagonFengMao/Characters/Heroes/FengMao/Animations/SelectScreen_Start.SelectScreen_Start'"));
 	//Idle Animation
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdleFengMao(TEXT("AnimSequence'/Game/ParagonFengMao/Characters/Heroes/FengMao/Animations/Idle.Idle'"));
+	finalLoadChoice(playerMesh, SkeleFengMaoDefault.Object, BP_AnimFengMao.Object, SoundFengMao.Object, AnimLevelStartFengMao.Object, AnimIdleFengMao.Object);
 } //end Feng Mao
 
 void APlayerTrophy::loadGadget(USkeletalMeshComponent* playerMesh) {
@@ -190,6 +202,7 @@ void APlayerTrophy::loadGadget(USkeletalMeshComponent* playerMesh) {
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartGadget(TEXT("AnimSequence'/Game/ParagonGadget/Characters/Heroes/Gadget/Animations/SelectScreen_Start.SelectScreen_Start'"));
 	//Idle Animation
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdleGadget(TEXT("AnimSequence'/Game/ParagonGadget/Characters/Heroes/Gadget/Animations/Idle.Idle'"));
+	finalLoadChoice(playerMesh, SkeleGadgetDefault.Object, BP_AnimGadget.Object, SoundGadget.Object, AnimLevelStartGadget.Object, AnimIdleGadget.Object);
 } //end Gadget
 
 void APlayerTrophy::loadGrim(USkeletalMeshComponent* playerMesh) {
@@ -203,6 +216,7 @@ void APlayerTrophy::loadGrim(USkeletalMeshComponent* playerMesh) {
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartGrim(TEXT("AnimSequence'/Game/ParagonGRIMexe/Characters/Heroes/GRIM/Animations/SelectScreen_Start.SelectScreen_Start'"));
 	//Idle Animation
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdleGrim(TEXT("AnimSequence'/Game/ParagonGRIMexe/Characters/Heroes/GRIM/Animations/Idle.Idle'"));
+	finalLoadChoice(playerMesh, SkeleGrimDefault.Object, BP_AnimGrim.Object, SoundGrim.Object, AnimLevelStartGrim.Object, AnimIdleGrim.Object);
 } //end Grim
 
 void APlayerTrophy::loadGrux(USkeletalMeshComponent* playerMesh) {
@@ -216,6 +230,7 @@ void APlayerTrophy::loadGrux(USkeletalMeshComponent* playerMesh) {
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartGrux(TEXT("AnimSequence'/Game/ParagonGrux/Characters/Heroes/Grux/Animations/LevelStart.LevelStart'"));
 	//Idle Animation
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdleGrux(TEXT("AnimSequence'/Game/ParagonGrux/Characters/Heroes/Grux/Animations/Idle.Idle'"));
+	finalLoadChoice(playerMesh, SkeleGruxDefault.Object, BP_AnimGrux.Object, SoundGrux.Object, AnimLevelStartGrux.Object, AnimIdleGrux.Object);
 } //end Grux
 
 void APlayerTrophy::loadHowitzer(USkeletalMeshComponent* playerMesh) {
@@ -229,6 +244,7 @@ void APlayerTrophy::loadHowitzer(USkeletalMeshComponent* playerMesh) {
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartHowitzer(TEXT("AnimSequence'/Game/ParagonHowitzer/Characters/Heroes/Howitzer/Animations/LevelStart.LevelStart'"));
 	//Idle Animation
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdleHowitzer(TEXT("AnimSequence'/Game/ParagonHowitzer/Characters/Heroes/Howitzer/Animations/Idle.Idle'"));
+	finalLoadChoice(playerMesh, SkeleHowlitzerDefault.Object, BP_AnimHowitzer.Object, SoundHowitzer.Object, AnimLevelStartHowitzer.Object, AnimIdleHowitzer.Object);
 } //end Howitzer
 
 void APlayerTrophy::loadKhaimera(USkeletalMeshComponent* playerMesh) {
@@ -242,6 +258,7 @@ void APlayerTrophy::loadKhaimera(USkeletalMeshComponent* playerMesh) {
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartKhaimera(TEXT("AnimSequence'/Game/ParagonKhaimera/Characters/Heroes/Khaimera/Animations/LevelStart.LevelStart'"));
 	//Idle Animation
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdleKhaimera(TEXT("AnimSequence'/Game/ParagonKhaimera/Characters/Heroes/Khaimera/Animations/Idle.Idle'"));
+	finalLoadChoice(playerMesh, SkeleKhaimeraDefault.Object, BP_AnimKhaimera.Object, SoundKhaimera.Object, AnimLevelStartKhaimera.Object, AnimIdleKhaimera.Object);
 } //end Khaimera
 
 void APlayerTrophy::loadKwang(USkeletalMeshComponent* playerMesh) {
@@ -255,6 +272,7 @@ void APlayerTrophy::loadKwang(USkeletalMeshComponent* playerMesh) {
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartKwang(TEXT("AnimSequence'/Game/ParagonKwang/Characters/Heroes/Kwang/Animations/LevelStart.LevelStart'"));
 	//Idle Animation
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdleKwang(TEXT("AnimSequence'/Game/ParagonKwang/Characters/Heroes/Kwang/Animations/Idle.Idle'"));
+	finalLoadChoice(playerMesh, SkeleKwangDefault.Object, BP_AnimKwang.Object, SoundKwang.Object, AnimLevelStartKwang.Object, AnimIdleKwang.Object);
 } //end Kwang
 
 void APlayerTrophy::loadMurdock(USkeletalMeshComponent* playerMesh) {
@@ -268,6 +286,7 @@ void APlayerTrophy::loadMurdock(USkeletalMeshComponent* playerMesh) {
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartKwang(TEXT("AnimSequence'/Game/ParagonMurdock/Characters/Heroes/Murdock/Animations/LevelStart.LevelStart'"));
 	//Idle Animation
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdleMurdock(TEXT("AnimSequence'/Game/ParagonMurdock/Characters/Heroes/Murdock/Animations/Idle.Idle'"));
+	finalLoadChoice(playerMesh, SkeleMurdockDefault.Object, BP_AnimMurdock.Object, SoundMurdock.Object, AnimLevelStartKwang.Object, AnimIdleMurdock.Object);
 } //end Murdock
 
 void APlayerTrophy::loadMuriel(USkeletalMeshComponent* playerMesh) {
@@ -281,19 +300,27 @@ void APlayerTrophy::loadMuriel(USkeletalMeshComponent* playerMesh) {
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartMuriel(TEXT("AnimSequence'/Game/ParagonMuriel/Characters/Heroes/Muriel/Animations/LevelStart.LevelStart'"));
 	//Idle Animation
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdleMuriel(TEXT("AnimSequence'/Game/ParagonMuriel/Characters/Heroes/Muriel/Animations/Idle.Idle'"));
+	finalLoadChoice(playerMesh, SkeleMurielDefault.Object, BP_AnimMuriel.Object, SoundMuriel.Object, AnimLevelStartMuriel.Object, AnimIdleMuriel.Object);
 } //end Muriel
 
-void APlayerTrophy::loadPhase(USkeletalMeshComponent* playerMesh) {
+void APlayerTrophy::loadPhase(USkeletalMeshComponent* playerMesh) { //Used for Debugging
+	UE_LOG(LogTemp, Warning, TEXT("Gets inside loadPhase function"));
 	//Skeleton
-	ConstructorHelpers::FObjectFinder<USkeletalMesh>SkelePhaseDefault(TEXT("SkeletalMesh'/Game/ParagonPhase/Characters/Heroes/Phase/Meshes/Phase_GDC.Phase_GDC'"));
+	USkeletalMesh* SkelePhaseDefault = Cast<USkeletalMesh>(StaticLoadObject(USkeletalMesh::StaticClass(), NULL, 
+		TEXT("SkeletalMesh'/Game/ParagonPhase/Characters/Heroes/Phase/Meshes/Phase_GDC.Phase_GDC'")));
 	//Animation Blueprint
-	ConstructorHelpers::FObjectFinder<UAnimBlueprint>BP_AnimPhase(TEXT("AnimBlueprint'/Game/ParagonPhase/Characters/Heroes/Phase/Phase_AnimBlueprint.Phase_AnimBlueprint'"));
+	UAnimBlueprint* BP_AnimPhase = Cast<UAnimBlueprint>(StaticLoadObject(UAnimBlueprint::StaticClass(), NULL, 
+		TEXT("AnimBlueprint'/Game/ParagonPhase/Characters/Heroes/Phase/Phase_AnimBlueprint.Phase_AnimBlueprint'")));
 	//Sound
-	ConstructorHelpers::FObjectFinder<USoundCue>SoundPhase(TEXT("SoundCue'/Game/ParagonPhase/Characters/Heroes/Phase/Sounds/SoundCues/Phase_Intro_Statement.Phase_Intro_Statement'"));
+	USoundCue* SoundPhase = Cast<USoundCue>(StaticLoadObject(USoundCue::StaticClass(), NULL,
+		TEXT("SoundCue'/Game/ParagonPhase/Characters/Heroes/Phase/Sounds/SoundCues/Phase_Intro_Statement.Phase_Intro_Statement'")));
 	//Level Start Animation
-	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartPhase(TEXT("AnimSequence'/Game/ParagonPhase/Characters/Heroes/Phase/Animations/LevelStart.LevelStart'"));
+	UAnimSequence* AnimLevelStartPhase = Cast<UAnimSequence>(StaticLoadObject(UAnimSequence::StaticClass(), NULL,
+		TEXT("AnimSequence'/Game/ParagonPhase/Characters/Heroes/Phase/Animations/LevelStart.LevelStart'")));
 	//Idle Animation
-	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdlePhase(TEXT("AnimSequence'/Game/ParagonPhase/Characters/Heroes/Phase/Animations/Idle.Idle'"));
+	UAnimSequence* AnimIdlePhase = Cast<UAnimSequence>(StaticLoadObject(UAnimSequence::StaticClass(), NULL,
+		TEXT("AnimSequence'/Game/ParagonPhase/Characters/Heroes/Phase/Animations/Idle.Idle'")));
+	finalLoadChoice(playerMesh, SkelePhaseDefault, BP_AnimPhase, SoundPhase, AnimLevelStartPhase, AnimIdlePhase);
 } //end Phase
 
 void APlayerTrophy::loadRampage(USkeletalMeshComponent* playerMesh) {
@@ -307,6 +334,7 @@ void APlayerTrophy::loadRampage(USkeletalMeshComponent* playerMesh) {
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartRampage(TEXT("AnimSequence'/Game/ParagonRampage/Characters/Heroes/Rampage/Animations/SelectScreen_Start.SelectScreen_Start'"));
 	//Idle Animation
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdleRampage(TEXT("AnimSequence'/Game/ParagonRampage/Characters/Heroes/Rampage/Animations/Idle.Idle'"));
+	finalLoadChoice(playerMesh, SkeleRampageDefault.Object, BP_AnimRampage.Object, SoundRampage.Object, AnimLevelStartRampage.Object, AnimIdleRampage.Object);
 } //end Rampage
 
 void APlayerTrophy::loadRiktor(USkeletalMeshComponent* playerMesh) {
@@ -320,6 +348,7 @@ void APlayerTrophy::loadRiktor(USkeletalMeshComponent* playerMesh) {
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartRiktor(TEXT("AnimSequence'/Game/ParagonRiktor/Characters/Heroes/Riktor/Animations/LevelStart.LevelStart'"));
 	//Idle Animation
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdleRiktor(TEXT("AnimSequence'/Game/ParagonRiktor/Characters/Heroes/Riktor/Animations/Idle.Idle'"));
+	finalLoadChoice(playerMesh, SkeleRiktorDefault.Object, BP_AnimRiktor.Object, SoundRiktor.Object, AnimLevelStartRiktor.Object, AnimIdleRiktor.Object);
 } //end Riktor
 
 void APlayerTrophy::loadSerath(USkeletalMeshComponent* playerMesh) {
@@ -333,6 +362,7 @@ void APlayerTrophy::loadSerath(USkeletalMeshComponent* playerMesh) {
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartSerath(TEXT("AnimSequence'/Game/ParagonSerath/Characters/Heroes/Serath/Animations/Level_Start.Level_Start'"));
 	//Idle Animation
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdleSerath(TEXT("AnimSequence'/Game/ParagonSerath/Characters/Heroes/Serath/Animations/Idle.Idle'"));
+	finalLoadChoice(playerMesh, SkeleSerathDefault.Object, BP_AnimSerath.Object, SoundSerath.Object, AnimLevelStartSerath.Object, AnimIdleSerath.Object);
 } //end Serath
 
 void APlayerTrophy::loadSevarog(USkeletalMeshComponent* playerMesh) {
@@ -346,6 +376,7 @@ void APlayerTrophy::loadSevarog(USkeletalMeshComponent* playerMesh) {
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartSevarog(TEXT("AnimSequence'/Game/ParagonSevarog/Characters/Heroes/Sevarog/Animations/LevelStart.LevelStart'"));
 	//Idle Animation
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdleSevarog(TEXT("AnimSequence'/Game/ParagonSevarog/Characters/Heroes/Sevarog/Animations/Idle.Idle'"));
+	finalLoadChoice(playerMesh, SkeleSevarogDefault.Object, BP_AnimSevarog.Object, SoundSevarog.Object, AnimLevelStartSevarog.Object, AnimIdleSevarog.Object);
 } //end Sevarog
 
 void APlayerTrophy::loadShinbi(USkeletalMeshComponent* playerMesh) {
@@ -359,6 +390,7 @@ void APlayerTrophy::loadShinbi(USkeletalMeshComponent* playerMesh) {
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartShinbi(TEXT("AnimSequence'/Game/ParagonShinbi/Characters/Heroes/Shinbi/Animations/LevelStart.LevelStart'"));
 	//Idle Animation
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdleShinbi(TEXT("AnimSequence'/Game/ParagonShinbi/Characters/Heroes/Shinbi/Shinbi_Wolf/Animations/Idle.Idle'"));
+	finalLoadChoice(playerMesh, SkeleShinbiDefault.Object, BP_AnimShinbi.Object, SoundShinbi.Object, AnimLevelStartShinbi.Object, AnimIdleShinbi.Object);
 } //end Shinbi
 
 void APlayerTrophy::loadTwinblast(USkeletalMeshComponent* playerMesh) {
@@ -372,6 +404,7 @@ void APlayerTrophy::loadTwinblast(USkeletalMeshComponent* playerMesh) {
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimLevelStartTwinblast(TEXT("AnimSequence'/Game/ParagonTwinblast/Characters/Heroes/TwinBlast/Animations/SelectScreen_Start.SelectScreen_Start'"));
 	//Idle Animation
 	ConstructorHelpers::FObjectFinder<UAnimSequence>AnimIdleTwinblast(TEXT("AnimSequence'/Game/ParagonTwinblast/Characters/Heroes/TwinBlast/Animations/Idle.Idle'"));
+	finalLoadChoice(playerMesh, SkeleTwinblastDefault.Object, BP_AnimTwinblast.Object, SoundTwinblast.Object, AnimLevelStartTwinblast.Object, AnimIdleTwinblast.Object);
 } //end Twinblast
 
 USkeletalMeshComponent* APlayerTrophy::getPlayerMesh(int playerNum) {
