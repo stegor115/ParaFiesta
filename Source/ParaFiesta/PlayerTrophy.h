@@ -97,7 +97,13 @@ public:
 	void loadShinbi(USkeletalMeshComponent* playerMesh);
 	void loadTwinblast(USkeletalMeshComponent* playerMesh);
 
+	//Various functions
 	USkeletalMeshComponent* getPlayerMesh(int playerNum); //Retrives correct player's mesh component
+	void handleCamera();
 	
-	
+private:
+	ESelectedChar playerOneChoice;
+	ESelectedChar playerTwoChoice;
+	ESelectedChar playerThreeChoice;
+	ESelectedChar playerFourChoice;
 };

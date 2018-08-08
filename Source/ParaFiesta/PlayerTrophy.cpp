@@ -58,6 +58,7 @@ void APlayerTrophy::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	//TO-DO: Preload Character Skeletons, Incorperating Loading Screen
 }
 
 // Called every frame
@@ -70,67 +71,105 @@ void APlayerTrophy::Tick(float DeltaTime)
 void APlayerTrophy::startLoadChoice(int playerNum, ESelectedChar playerChoice) { //Callable from Blueprint
 	//Get Player Mesh based on player number
 	USkeletalMeshComponent* playerMesh = getPlayerMesh(playerNum);
-
+	ESelectedChar choice; //Used to give to private enums after the first switch case
 	//Order of below: Find skeleton, animation blueprint, sound, level start animation, idle animation, pass into final load function
 	switch (playerChoice) {
 	case ESelectedChar::SC_Countess:
+		choice = ESelectedChar::SC_Countess;
 		loadCountess(playerMesh);
 		break;
 	case ESelectedChar::SC_Dekker:
+		choice = ESelectedChar::SC_Dekker;
 		loadDekker(playerMesh);
 		break;
 	case ESelectedChar::SC_FengMao:
+		choice = ESelectedChar::SC_FengMao;
 		loadFengMao(playerMesh);
 		break;
 	case ESelectedChar::SC_Gadget:
+		choice = ESelectedChar::SC_Gadget;
 		loadGadget(playerMesh);
 		break;
 	case ESelectedChar::SC_Grim:
+		choice = ESelectedChar::SC_Grim;
 		loadGrim(playerMesh);
 		break;
 	case ESelectedChar::SC_Grux:
+		choice = ESelectedChar::SC_Grux;
 		loadGrux(playerMesh);
 		break;
 	case ESelectedChar::SC_Howitzer:
+		choice = ESelectedChar::SC_Howitzer;
 		loadHowitzer(playerMesh);
 		break;
 	case ESelectedChar::SC_Khaimera:
+		choice = ESelectedChar::SC_Khaimera;
 		loadKhaimera(playerMesh);
 		break;
 	case ESelectedChar::SC_Kwang:
+		choice = ESelectedChar::SC_Kwang;
 		loadKwang(playerMesh);
 		break;
 	case ESelectedChar::SC_Murdock:
+		choice = ESelectedChar::SC_Murdock;
 		loadMurdock(playerMesh);
 		break;
 	case ESelectedChar::SC_Muriel:
+		choice = ESelectedChar::SC_Muriel;
 		loadMuriel(playerMesh);
 		break;
-	case ESelectedChar::SC_Phase: //Used for Debugging
+	case ESelectedChar::SC_Phase:
+		choice = ESelectedChar::SC_Phase;
 		loadPhase(playerMesh);
 		break;
 	case ESelectedChar::SC_Rampage:
+		choice = ESelectedChar::SC_Rampage;
 		loadRampage(playerMesh);
 		break;
 	case ESelectedChar::SC_Riktor:
+		choice = ESelectedChar::SC_Riktor;
 		loadRiktor(playerMesh);
 		break;
 	case ESelectedChar::SC_Serath:
+		choice = ESelectedChar::SC_Serath;
 		loadSerath(playerMesh);
 		break;
 	case ESelectedChar::SC_Sevarog:
+		choice = ESelectedChar::SC_Sevarog;
 		loadSevarog(playerMesh);
 		break;
 	case ESelectedChar::SC_Shinbi:
+		choice = ESelectedChar::SC_Shinbi;
 		loadShinbi(playerMesh);
 		break;
 	case ESelectedChar::SC_Twinblast:
+		choice = ESelectedChar::SC_Twinblast;
 		loadTwinblast(playerMesh);
 		break;
 	default:
-		UE_LOG(LogTemp, Warning, TEXT("Default case reached, DEBUG THIS"));
+		UE_LOG(LogTemp, Warning, TEXT("Default character case reached, DEBUG THIS"));
 		break;
 	} //end switch
+
+	switch (playerNum) {
+	case 1:
+		playerOneChoice = choice;
+		break;
+	case 2:
+		playerTwoChoice = choice;
+		break;
+	case 3:
+		playerThreeChoice = choice;
+		break;
+	case 4:
+		playerFourChoice = choice;
+		break;
+	default:
+		UE_LOG(LogTemp, Warning, TEXT("Default choice case reached, DEBUG THIS"));
+		break;
+	} //end switch
+
+	handleCamera(); //in case tall character is selected
 } //end startLoadChoice
 
 void APlayerTrophy::finalLoadChoice(USkeletalMeshComponent* playerMesh, USkeletalMesh* skeleton, UAnimBlueprint* animBlueprint, 
@@ -505,4 +544,270 @@ USkeletalMeshComponent* APlayerTrophy::getPlayerMesh(int playerNum) {
 		return PlayerOneMesh; //Should never happen, but just in case so the compiler doesn't cry.
 		break;
 	} //end switch
+}
+
+void APlayerTrophy::handleCamera() {
+	//If all four 
+	bool shortOne = true;
+	bool shortTwo = true;
+	bool shortThree = true;
+	bool shortFour = true;
+
+	//Checks each playerChoice for all 4 characters, if tall is detected then the ifs skip the subsequent if statements
+	switch (playerOneChoice) {
+	case ESelectedChar::SC_Countess:
+		shortOne = true;
+		break;
+	case ESelectedChar::SC_Dekker:
+		shortOne = true;
+		break;
+	case ESelectedChar::SC_FengMao:
+		shortOne = true;
+		break;
+	case ESelectedChar::SC_Gadget:
+		shortOne = true;
+		break;
+	case ESelectedChar::SC_Grim: //Tall
+		shortOne = false;
+		break;
+	case ESelectedChar::SC_Grux:
+		shortOne = true;
+		break;
+	case ESelectedChar::SC_Howitzer:
+		shortOne = true;
+		break;
+	case ESelectedChar::SC_Khaimera:
+		shortOne = true;
+		break;
+	case ESelectedChar::SC_Kwang:
+		shortOne = true;
+		break;
+	case ESelectedChar::SC_Murdock:
+		shortOne = true;
+		break;
+	case ESelectedChar::SC_Muriel:
+		shortOne = true;
+		break;
+	case ESelectedChar::SC_Phase:
+		shortOne = true;
+		break;
+	case ESelectedChar::SC_Rampage:
+		shortOne = true;
+		break;
+	case ESelectedChar::SC_Riktor: //Tall
+		shortOne = false;
+		break;
+	case ESelectedChar::SC_Serath:
+		shortOne = true;
+		break;
+	case ESelectedChar::SC_Sevarog: //Tall
+		shortOne = false;
+		break;
+	case ESelectedChar::SC_Shinbi:
+		shortOne = true;
+		break;
+	case ESelectedChar::SC_Twinblast:
+		shortOne = true;
+		break;
+	default:
+		UE_LOG(LogTemp, Warning, TEXT("Default shortOne reached, DEBUG THIS"));
+		break;
+	} //end switch
+
+	if (shortOne) {
+		switch (playerTwoChoice) {
+		case ESelectedChar::SC_Countess:
+			shortTwo = true;
+			break;
+		case ESelectedChar::SC_Dekker:
+			shortTwo = true;
+			break;
+		case ESelectedChar::SC_FengMao:
+			shortTwo = true;
+			break;
+		case ESelectedChar::SC_Gadget:
+			shortTwo = true;
+			break;
+		case ESelectedChar::SC_Grim: //Tall
+			shortTwo = false;
+			break;
+		case ESelectedChar::SC_Grux:
+			shortTwo = true;
+			break;
+		case ESelectedChar::SC_Howitzer:
+			shortTwo = true;
+			break;
+		case ESelectedChar::SC_Khaimera:
+			shortTwo = true;
+			break;
+		case ESelectedChar::SC_Kwang:
+			shortTwo = true;
+			break;
+		case ESelectedChar::SC_Murdock:
+			shortTwo = true;
+			break;
+		case ESelectedChar::SC_Muriel:
+			shortTwo = true;
+			break;
+		case ESelectedChar::SC_Phase:
+			shortTwo = true;
+			break;
+		case ESelectedChar::SC_Rampage:
+			shortTwo = true;
+			break;
+		case ESelectedChar::SC_Riktor: //Tall
+			shortTwo = false;
+			break;
+		case ESelectedChar::SC_Serath:
+			shortTwo = true;
+			break;
+		case ESelectedChar::SC_Sevarog: //Tall
+			shortTwo = false;
+			break;
+		case ESelectedChar::SC_Shinbi:
+			shortTwo = true;
+			break;
+		case ESelectedChar::SC_Twinblast:
+			shortTwo = true;
+			break;
+		default:
+			UE_LOG(LogTemp, Warning, TEXT("Default shortTwo reached, DEBUG THIS"));
+			break;
+		}//end switch
+	} //end shortOne if
+	
+	if (shortOne && shortTwo) {
+		switch (playerThreeChoice) {
+		case ESelectedChar::SC_Countess:
+			shortThree = true;
+			break;
+		case ESelectedChar::SC_Dekker:
+			shortThree = true;
+			break;
+		case ESelectedChar::SC_FengMao:
+			shortThree = true;
+			break;
+		case ESelectedChar::SC_Gadget:
+			shortThree = true;
+			break;
+		case ESelectedChar::SC_Grim: //Tall
+			shortThree = false;
+			break;
+		case ESelectedChar::SC_Grux:
+			shortThree = true;
+			break;
+		case ESelectedChar::SC_Howitzer:
+			shortThree = true;
+			break;
+		case ESelectedChar::SC_Khaimera:
+			shortThree = true;
+			break;
+		case ESelectedChar::SC_Kwang:
+			shortThree = true;
+			break;
+		case ESelectedChar::SC_Murdock:
+			shortThree = true;
+			break;
+		case ESelectedChar::SC_Muriel:
+			shortThree = true;
+			break;
+		case ESelectedChar::SC_Phase:
+			shortThree = true;
+			break;
+		case ESelectedChar::SC_Rampage:
+			shortThree = true;
+			break;
+		case ESelectedChar::SC_Riktor: //Tall
+			shortThree = false;
+			break;
+		case ESelectedChar::SC_Serath:
+			shortThree = true;
+			break;
+		case ESelectedChar::SC_Sevarog: //Tall
+			shortThree = false;
+			break;
+		case ESelectedChar::SC_Shinbi:
+			shortThree = true;
+			break;
+		case ESelectedChar::SC_Twinblast:
+			shortThree = true;
+			break;
+		default:
+			UE_LOG(LogTemp, Warning, TEXT("Default shortThree reached, DEBUG THIS"));
+			break;
+		}//end switch
+	} //end shortOne & shortTwo if
+
+	if (shortOne && shortTwo && shortThree) {
+		switch (playerFourChoice) {
+		case ESelectedChar::SC_Countess:
+			shortFour = true;
+			break;
+		case ESelectedChar::SC_Dekker:
+			shortFour = true;
+			break;
+		case ESelectedChar::SC_FengMao:
+			shortFour = true;
+			break;
+		case ESelectedChar::SC_Gadget:
+			shortFour = true;
+			break;
+		case ESelectedChar::SC_Grim: //Tall
+			shortFour = false;
+			break;
+		case ESelectedChar::SC_Grux:
+			shortFour = true;
+			break;
+		case ESelectedChar::SC_Howitzer:
+			shortFour = true;
+			break;
+		case ESelectedChar::SC_Khaimera:
+			shortFour = true;
+			break;
+		case ESelectedChar::SC_Kwang:
+			shortFour = true;
+			break;
+		case ESelectedChar::SC_Murdock:
+			shortFour = true;
+			break;
+		case ESelectedChar::SC_Muriel:
+			shortFour = true;
+			break;
+		case ESelectedChar::SC_Phase:
+			shortFour = true;
+			break;
+		case ESelectedChar::SC_Rampage:
+			shortFour = true;
+			break;
+		case ESelectedChar::SC_Riktor: //Tall
+			shortFour = false;
+			break;
+		case ESelectedChar::SC_Serath:
+			shortFour = true;
+			break;
+		case ESelectedChar::SC_Sevarog: //Tall
+			shortFour = false;
+			break;
+		case ESelectedChar::SC_Shinbi:
+			shortFour = true;
+			break;
+		case ESelectedChar::SC_Twinblast:
+			shortFour = true;
+			break;
+		default:
+			UE_LOG(LogTemp, Warning, TEXT("Default shortFour reached, DEBUG THIS"));
+			break;
+		}//end switch
+	} //end shortOne & shortTwo & shortThree if
+
+	if (shortOne && shortTwo && shortThree && shortFour) {
+		//Switch camera to normal camera in case tall was previously chosen
+		TallCamera->SetActive(false);
+		Camera->SetActive(true);
+	}
+	else {
+		//Switch camera to tall camera
+		Camera->SetActive(false);
+		TallCamera->SetActive(true);
+	}
 }
