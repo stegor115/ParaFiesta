@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Sound/SoundCue.h"
+#include "Public/TimerManager.h" //Time/Delay for animations
 #include "PlayerTrophy.generated.h"
 
 UENUM(BlueprintType)
@@ -69,13 +70,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-	//Loading characters in
-	UFUNCTION(BlueprintCallable, Category="Character")
-	void startLoadChoice(int playerNum, ESelectedChar playerChoice); // Add argument to get Player Number, and one to figure out the character selected
 	void finalLoadChoice(USkeletalMeshComponent* playerMesh, USkeletalMesh* skeleton, UAnimBlueprint* animBlueprint, USoundCue* soundIntro, UAnimSequence* animLevelStart, UAnimSequence* animIdle);
+	void resetIdle(); //Resets idle animation after timer is done
 
 	//All character load functions, this is needed because it is not possible to initialize variables in a switch case statement
 	void loadCountess(USkeletalMeshComponent* playerMesh);
@@ -100,8 +96,18 @@ public:
 	//Various functions
 	USkeletalMeshComponent* getPlayerMesh(int playerNum); //Retrives correct player's mesh component
 	void handleCamera();
+
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+	//Loading characters in
+	UFUNCTION(BlueprintCallable, Category="Character")
+	void startLoadChoice(int playerNum, ESelectedChar playerChoice); // Add argument to get Player Number, and one to figure out the character selected
 	
 private:
+	USkeletalMeshComponent* tempSkele; // Used to store skeletal mesh component to reset Idle animation
+	UAnimSequence* tempAnimIdle; //Used to store idle animation to reset it
+	FTimerHandle AnimDelayTimerHandle;
 	ESelectedChar playerOneChoice;
 	ESelectedChar playerTwoChoice;
 	ESelectedChar playerThreeChoice;

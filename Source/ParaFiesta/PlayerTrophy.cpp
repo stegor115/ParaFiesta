@@ -9,6 +9,7 @@
 #include "Engine/SkeletalMesh.h"
 #include "Animation/AnimBlueprint.h"
 #include "Animation/AnimSequence.h"
+#include "Animation/AnimSingleNodeInstance.h"
 //SoundCue goes in the header file for some reason
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h" //Used to play 2D sounds
@@ -57,8 +58,6 @@ APlayerTrophy::APlayerTrophy()
 void APlayerTrophy::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	//TO-DO: Preload Character Skeletons, Incorperating Loading Screen
 }
 
 // Called every frame
@@ -179,10 +178,23 @@ void APlayerTrophy::finalLoadChoice(USkeletalMeshComponent* playerMesh, USkeleta
 	playerMesh->SetAnimInstanceClass(animBlueprint->GeneratedClass); //Animation Blueprint
 	UGameplayStatics::PlaySound2D(this->GetWorld(), soundIntro, 1.0f, 1.0f, 0.0f); //Sound
 	playerMesh->PlayAnimation(animLevelStart, false);
+	UE_LOG(LogTemp, Warning, TEXT("Level Start Animation begins"));
+	tempSkele = playerMesh;
+	tempAnimIdle = animIdle;
 	//TO-DO: Restart Idle Animation.
+	UE_LOG(LogTemp, Warning, TEXT("Timer starts"));
+	GetWorld()->GetTimerManager().SetTimer(AnimDelayTimerHandle, this, &APlayerTrophy::resetIdle, playerMesh->GetSingleNodeInstance()->GetLength(), false); //Resets idle animation
 } //end finalLoadChoice
 
-void APlayerTrophy::loadCountess(USkeletalMeshComponent* playerMesh) { //TO-DO: Edit Blueprint in UI
+void APlayerTrophy::resetIdle() { //Resets idle animation after timer is done
+	UE_LOG(LogTemp, Warning, TEXT("Timer ends"));
+	tempSkele->PlayAnimation(tempAnimIdle, true);
+	tempSkele = nullptr;
+	tempAnimIdle = nullptr;
+	GetWorldTimerManager().ClearTimer(AnimDelayTimerHandle);
+}
+
+void APlayerTrophy::loadCountess(USkeletalMeshComponent* playerMesh) {
 	//Skeleton
 	USkeletalMesh* SkeleCountessDefault = Cast<USkeletalMesh>(StaticLoadObject(USkeletalMesh::StaticClass(), NULL,
 		TEXT("SkeletalMesh'/Game/ParagonCountess/Characters/Heroes/Countess/Meshes/SM_Countess.SM_Countess'")));
@@ -502,7 +514,7 @@ void APlayerTrophy::loadShinbi(USkeletalMeshComponent* playerMesh) {
 		TEXT("AnimSequence'/Game/ParagonShinbi/Characters/Heroes/Shinbi/Animations/LevelStart.LevelStart'")));
 	//Idle Animation
 	UAnimSequence* AnimIdleShinbi = Cast<UAnimSequence>(StaticLoadObject(UAnimSequence::StaticClass(), NULL,
-		TEXT("AnimSequence'/Game/ParagonShinbi/Characters/Heroes/Shinbi/Shinbi_Wolf/Animations/Idle.Idle'")));
+		TEXT("AnimSequence'/Game/ParagonShinbi/Characters/Heroes/Shinbi/Animations/Idle.Idle'")));
 	finalLoadChoice(playerMesh, SkeleShinbiDefault, BP_AnimShinbi, SoundShinbi, AnimLevelStartShinbi, AnimIdleShinbi);
 } //end Shinbi
 
