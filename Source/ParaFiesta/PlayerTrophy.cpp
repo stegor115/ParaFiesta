@@ -173,21 +173,19 @@ void APlayerTrophy::startLoadChoice(int playerNum, ESelectedChar playerChoice) {
 
 void APlayerTrophy::finalLoadChoice(USkeletalMeshComponent* playerMesh, USkeletalMesh* skeleton, UAnimBlueprint* animBlueprint, 
 									USoundCue* soundIntro, UAnimSequence* animLevelStart, UAnimSequence* animIdle)
-{ //Pass in skeleton, animation blueprint, sound, level start animation, idle animation
+{
+	playerMesh->SetVisibility(true); //In case it was invisible
 	playerMesh->SetSkeletalMesh(skeleton); //Skeleton
 	playerMesh->SetAnimInstanceClass(animBlueprint->GeneratedClass); //Animation Blueprint
 	UGameplayStatics::PlaySound2D(this->GetWorld(), soundIntro, 1.0f, 1.0f, 0.0f); //Sound
 	playerMesh->PlayAnimation(animLevelStart, false);
-	UE_LOG(LogTemp, Warning, TEXT("Level Start Animation begins"));
 	tempSkele = playerMesh;
 	tempAnimIdle = animIdle;
 	//TO-DO: Restart Idle Animation.
-	UE_LOG(LogTemp, Warning, TEXT("Timer starts"));
 	GetWorld()->GetTimerManager().SetTimer(AnimDelayTimerHandle, this, &APlayerTrophy::resetIdle, playerMesh->GetSingleNodeInstance()->GetLength(), false); //Resets idle animation
 } //end finalLoadChoice
 
 void APlayerTrophy::resetIdle() { //Resets idle animation after timer is done
-	UE_LOG(LogTemp, Warning, TEXT("Timer ends"));
 	tempSkele->PlayAnimation(tempAnimIdle, true);
 	tempSkele = nullptr;
 	tempAnimIdle = nullptr;
@@ -822,4 +820,9 @@ void APlayerTrophy::handleCamera() {
 		Camera->SetActive(false);
 		TallCamera->SetActive(true);
 	}
+}
+
+void APlayerTrophy::removeCharacter(int playerNum) { 
+	UE_LOG(LogTemp, Warning, TEXT("Removing character"));
+	getPlayerMesh(playerNum)->SetVisibility(false);
 }

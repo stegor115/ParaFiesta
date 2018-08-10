@@ -103,6 +103,9 @@ public:
 	//Loading characters in
 	UFUNCTION(BlueprintCallable, Category="Character")
 	void startLoadChoice(int playerNum, ESelectedChar playerChoice); // Add argument to get Player Number, and one to figure out the character selected
+
+	UFUNCTION(BlueprintCallable, Category = "Character")
+		void removeCharacter(int playerNum); // Add argument to get Player Number, and one to figure out the character selected
 	
 private:
 	USkeletalMeshComponent* tempSkele; // Used to store skeletal mesh component to reset Idle animation
