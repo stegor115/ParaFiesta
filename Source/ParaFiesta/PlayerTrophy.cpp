@@ -179,18 +179,47 @@ void APlayerTrophy::finalLoadChoice(USkeletalMeshComponent* playerMesh, USkeleta
 	playerMesh->SetAnimInstanceClass(animBlueprint->GeneratedClass); //Animation Blueprint
 	UGameplayStatics::PlaySound2D(this->GetWorld(), soundIntro, 1.0f, 1.0f, 0.0f); //Sound
 	playerMesh->PlayAnimation(animLevelStart, false);
-	tempSkele = playerMesh;
-	tempAnimIdle = animIdle;
-	//TO-DO: Restart Idle Animation.
-	GetWorld()->GetTimerManager().SetTimer(AnimDelayTimerHandle, this, &APlayerTrophy::resetIdle, playerMesh->GetSingleNodeInstance()->GetLength(), false); //Resets idle animation
+	if (playerMesh == PlayerOneMesh) {
+		animIdlePlayerOne = animIdle;
+		GetWorld()->GetTimerManager().SetTimer(TimeHandlePlayerOne, this, &APlayerTrophy::resetIdlePlayerOne, playerMesh->GetSingleNodeInstance()->GetLength(), false); //Resets idle animation for Player One
+	} //end PlayerOne if
+	else if (playerMesh == PlayerTwoMesh) {
+		animIdlePlayerTwo = animIdle;
+		GetWorld()->GetTimerManager().SetTimer(TimeHandlePlayerTwo, this, &APlayerTrophy::resetIdlePlayerTwo, playerMesh->GetSingleNodeInstance()->GetLength(), false); //Resets idle animation for Player Two
+	} //end PlayerTwo if
+	else if (playerMesh == PlayerThreeMesh) {
+		animIdlePlayerThree = animIdle;
+		GetWorld()->GetTimerManager().SetTimer(TimeHandlePlayerThree, this, &APlayerTrophy::resetIdlePlayerThree, playerMesh->GetSingleNodeInstance()->GetLength(), false); //Resets idle animation for Player Three
+	} //end PlayerThree if
+	else if (playerMesh == PlayerFourMesh) {
+		animIdlePlayerFour = animIdle;
+		GetWorld()->GetTimerManager().SetTimer(TimeHandlePlayerFour, this, &APlayerTrophy::resetIdlePlayerFour, playerMesh->GetSingleNodeInstance()->GetLength(), false); //Resets idle animation for Player Four
+	} //end PlayerFour if
 } //end finalLoadChoice
 
-void APlayerTrophy::resetIdle() { //Resets idle animation after timer is done
-	tempSkele->PlayAnimation(tempAnimIdle, true);
-	tempSkele = nullptr;
-	tempAnimIdle = nullptr;
-	GetWorldTimerManager().ClearTimer(AnimDelayTimerHandle);
-}
+void APlayerTrophy::resetIdlePlayerOne() { //TO-DO: Make each player have a seperate function for this, can delete the temp variables to do so.
+	PlayerOneMesh->PlayAnimation(animIdlePlayerOne, true);
+	GetWorldTimerManager().ClearTimer(TimeHandlePlayerOne);
+	animIdlePlayerOne = nullptr;
+} //end resetIdlePlayerOne
+
+void APlayerTrophy::resetIdlePlayerTwo() { //TO-DO: Make each player have a seperate function for this, can delete the temp variables to do so.
+	PlayerTwoMesh->PlayAnimation(animIdlePlayerTwo, true);
+	GetWorldTimerManager().ClearTimer(TimeHandlePlayerTwo);
+	animIdlePlayerTwo = nullptr;
+} //end resetIdlePlayerOne
+
+void APlayerTrophy::resetIdlePlayerThree() { //TO-DO: Make each player have a seperate function for this, can delete the temp variables to do so.
+	PlayerThreeMesh->PlayAnimation(animIdlePlayerThree, true);
+	GetWorldTimerManager().ClearTimer(TimeHandlePlayerThree);
+	animIdlePlayerThree = nullptr;
+} //end resetIdlePlayerOne
+
+void APlayerTrophy::resetIdlePlayerFour() { //TO-DO: Make each player have a seperate function for this, can delete the temp variables to do so.
+	PlayerFourMesh->PlayAnimation(animIdlePlayerFour, true);
+	GetWorldTimerManager().ClearTimer(TimeHandlePlayerFour);
+	animIdlePlayerFour = nullptr;
+} //end resetIdlePlayerOne
 
 void APlayerTrophy::loadCountess(USkeletalMeshComponent* playerMesh) {
 	//Skeleton
@@ -620,7 +649,7 @@ void APlayerTrophy::handleCamera() {
 		shortOne = true;
 		break;
 	default:
-		UE_LOG(LogTemp, Warning, TEXT("Default shortOne reached, DEBUG THIS"));
+		shortOne = true;
 		break;
 	} //end switch
 
@@ -681,7 +710,7 @@ void APlayerTrophy::handleCamera() {
 			shortTwo = true;
 			break;
 		default:
-			UE_LOG(LogTemp, Warning, TEXT("Default shortTwo reached, DEBUG THIS"));
+			shortTwo = true;
 			break;
 		}//end switch
 	} //end shortOne if
@@ -743,7 +772,7 @@ void APlayerTrophy::handleCamera() {
 			shortThree = true;
 			break;
 		default:
-			UE_LOG(LogTemp, Warning, TEXT("Default shortThree reached, DEBUG THIS"));
+			shortThree = true;
 			break;
 		}//end switch
 	} //end shortOne & shortTwo if
@@ -805,7 +834,7 @@ void APlayerTrophy::handleCamera() {
 			shortFour = true;
 			break;
 		default:
-			UE_LOG(LogTemp, Warning, TEXT("Default shortFour reached, DEBUG THIS"));
+			shortFour = true;
 			break;
 		}//end switch
 	} //end shortOne & shortTwo & shortThree if
@@ -823,6 +852,26 @@ void APlayerTrophy::handleCamera() {
 }
 
 void APlayerTrophy::removeCharacter(int playerNum) { 
-	UE_LOG(LogTemp, Warning, TEXT("Removing character"));
 	getPlayerMesh(playerNum)->SetVisibility(false);
-}
+
+	switch (playerNum) {
+	case 1:
+		playerOneChoice = ESelectedChar::SC_Deselect;
+		break;
+	case 2:
+		playerTwoChoice = ESelectedChar::SC_Deselect;
+		break;
+	case 3:
+		playerThreeChoice = ESelectedChar::SC_Deselect;
+		break;
+	case 4:
+		playerFourChoice = ESelectedChar::SC_Deselect;
+		break;
+	default:
+		UE_LOG(LogTemp, Warning, TEXT("Improper playerNumber in removeCharacter"));
+		break;
+	} //end switch
+
+	handleCamera(); //Used to reset camera in case the last tall character got removed.
+
+} //end PlayerTrophy.cpp

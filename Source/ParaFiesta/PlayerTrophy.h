@@ -28,7 +28,8 @@ enum class ESelectedChar : uint8
 	SC_Serath UMETA(DisplayName = "Serath"), //14
 	SC_Sevarog UMETA(DisplayName = "Sevarog"), //15
 	SC_Shinbi UMETA(DisplayName = "Shinbi"), //16
-	SC_Twinblast UMETA(DisplayName = "Twinblast") //17
+	SC_Twinblast UMETA(DisplayName = "Twinblast"), //17
+	SC_Deselect UMETA(DisplayName = "Deselected") // 18, this is used for special case where back button is pressed
 };
 
 UCLASS()
@@ -71,7 +72,11 @@ protected:
 	virtual void BeginPlay() override;
 
 	void finalLoadChoice(USkeletalMeshComponent* playerMesh, USkeletalMesh* skeleton, UAnimBlueprint* animBlueprint, USoundCue* soundIntro, UAnimSequence* animLevelStart, UAnimSequence* animIdle);
-	void resetIdle(); //Resets idle animation after timer is done
+	//Idle Resets
+	void resetIdlePlayerOne();
+	void resetIdlePlayerTwo();
+	void resetIdlePlayerThree();
+	void resetIdlePlayerFour();
 
 	//All character load functions, this is needed because it is not possible to initialize variables in a switch case statement
 	void loadCountess(USkeletalMeshComponent* playerMesh);
@@ -102,7 +107,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	//Loading characters in
 	UFUNCTION(BlueprintCallable, Category="Character")
-	void startLoadChoice(int playerNum, ESelectedChar playerChoice); // Add argument to get Player Number, and one to figure out the character selected
+		void startLoadChoice(int playerNum, ESelectedChar playerChoice); // Add argument to get Player Number, and one to figure out the character selected
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
 		void removeCharacter(int playerNum); // Add argument to get Player Number, and one to figure out the character selected
@@ -110,9 +115,20 @@ public:
 private:
 	USkeletalMeshComponent* tempSkele; // Used to store skeletal mesh component to reset Idle animation
 	UAnimSequence* tempAnimIdle; //Used to store idle animation to reset it
-	FTimerHandle AnimDelayTimerHandle;
+
+	//Timers
+	FTimerHandle TimeHandlePlayerOne;
+	FTimerHandle TimeHandlePlayerTwo;
+	FTimerHandle TimeHandlePlayerThree;
+	FTimerHandle TimeHandlePlayerFour;
+	//Player Choices
 	ESelectedChar playerOneChoice;
 	ESelectedChar playerTwoChoice;
 	ESelectedChar playerThreeChoice;
 	ESelectedChar playerFourChoice;
+	//Player Idle Animatons, used to "pass" them from finalLoadChoice to resetIdle.
+	UAnimSequence* animIdlePlayerOne;
+	UAnimSequence* animIdlePlayerTwo;
+	UAnimSequence* animIdlePlayerThree;
+	UAnimSequence* animIdlePlayerFour;
 };
