@@ -17,12 +17,45 @@ ABoardSpot::ABoardSpot()
 	Scene = CreateDefaultSubobject<USceneComponent>(TEXT("Scene"));
 	RootComponent = Scene;
 
-	BaseBlock = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base"));
-	BaseBlock->SetupAttachment(RootComponent);
-	ConstructorHelpers::FObjectFinder<UStaticMesh>cube(TEXT("StaticMesh'/Game/StarterContent/Shapes/Shape_Cube.Shape_Cube'"));
-	BaseBlock->SetStaticMesh(cube.Object);
-	BaseBlock->SetRelativeScale3D(FVector(2.0f, 2.0f, 0.5f));
-	BaseBlock->CastShadow = false;
+	ConstructorHelpers::FObjectFinder<UStaticMesh>plane(TEXT("StaticMesh'/Game/StarterContent/Shapes/Shape_Plane.Shape_Plane'"));
+
+	//Top Plane
+	PlaneTop = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Top"));
+	PlaneTop->SetupAttachment(RootComponent);
+	PlaneTop->SetStaticMesh(plane.Object);
+	PlaneTop->SetRelativeScale3D(FVector(2.0f, 2.0f, 1.0f));
+	PlaneTop->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
+	PlaneTop->CastShadow = false;
+	
+	//If Enum Board Piece type, set texture
+
+	//Front Plane
+	PlaneFront = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Front"));
+	PlaneFront->SetupAttachment(RootComponent);
+	PlaneFront->SetStaticMesh(plane.Object);
+	PlaneFront->SetRelativeScale3D(FVector(2.0f, 0.5f, 1.0f));
+	PlaneFront->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
+	PlaneFront->SetRelativeLocation(FVector(0.0f, 100.0f, 25.0f));
+	PlaneFront->CastShadow = false;
+
+	//Right Plane
+	PlaneRight = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Right"));
+	PlaneRight->SetupAttachment(RootComponent);
+	PlaneRight->SetStaticMesh(plane.Object);
+	PlaneRight->SetRelativeScale3D(FVector(2.0f, 0.5f, 1.0f));
+	PlaneRight->SetRelativeRotation(FRotator(180.0f, -90.0f, 90.0f));
+	PlaneRight->SetRelativeLocation(FVector(100.0f, 0.0f, 25.0f));
+	PlaneRight->CastShadow = false;
+
+	//Left Plane
+	PlaneLeft = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Left"));
+	PlaneLeft->SetupAttachment(RootComponent);
+	PlaneLeft->SetStaticMesh(plane.Object);
+	PlaneLeft->SetRelativeScale3D(FVector(2.0f, 0.5f, 1.0f));
+	PlaneLeft->SetRelativeRotation(FRotator(180.0f, -90.0f, -90.0f));
+	PlaneLeft->SetRelativeLocation(FVector(-100.0f, 0.0f, 25.0f));
+	PlaneLeft->CastShadow = false;
+
 
 	TriggerBlock = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
 	TriggerBlock->SetupAttachment(RootComponent);

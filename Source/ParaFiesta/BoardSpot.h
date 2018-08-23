@@ -6,17 +6,52 @@
 #include "GameFramework/Actor.h"
 #include "BoardSpot.generated.h"
 
+UENUM(BlueprintType)
+enum class EBoardPiece : uint8
+{
+	E_Start UMETA(DisplayName = "Start"), //0
+	E_Good UMETA(DisplayName = "Good"), //1
+	E_Bad UMETA(DisplayName = "Bad"), //2
+	E_LeftOrRight UMETA(DisplayName = "Left or right"), //3
+	E_UpOrDown UMETA(DisplayName = "Up or down") //4
+};
+
+UENUM(BlueprintType)
+enum class EDirection : uint8
+{
+	E_Left UMETA(DisplayName = "Left"), //0
+	E_Right UMETA(DisplayName = "Right"), //1
+	E_Up UMETA(DisplayName = "Up"), //2
+	E_Down UMETA(DisplayName = "Down"), //3
+	E_Pause UMETA(DisplayName = "Pause for choice")
+};
+
 UCLASS()
 class PARAFIESTA_API ABoardSpot : public AActor
 {
 	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Enum, meta = (AllowPrivateAccess = "true"))
+	EBoardPiece BoardPiece;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Enum, meta = (AllowPrivateAccess = "true"))
+	EDirection Direction;
 
 	//Scene (For Root Component)
 	UPROPERTY(VisibleAnywhere, BluePrintReadWrite, Category = Scene, meta = (AllowPrivateAccess = "true"))
 	class USceneComponent* Scene;
 
 	UPROPERTY(VisibleAnywhere, BluePrintReadWrite, Category = Mesh, meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* BaseBlock;
+	class UStaticMeshComponent* PlaneTop;
+
+	UPROPERTY(VisibleAnywhere, BluePrintReadWrite, Category = Mesh, meta = (AllowPrivateAccess = "true"))
+	class UStaticMeshComponent* PlaneFront;
+
+	UPROPERTY(VisibleAnywhere, BluePrintReadWrite, Category = Mesh, meta = (AllowPrivateAccess = "true"))
+	class UStaticMeshComponent* PlaneRight;
+
+	UPROPERTY(VisibleAnywhere, BluePrintReadWrite, Category = Mesh, meta = (AllowPrivateAccess = "true"))
+	class UStaticMeshComponent* PlaneLeft;
 
 	UPROPERTY(VisibleAnywhere, BluePrintReadWrite, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* TriggerBlock;
