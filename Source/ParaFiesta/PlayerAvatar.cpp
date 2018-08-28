@@ -26,15 +26,14 @@ APlayerAvatar::APlayerAvatar()
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 800.0f; //Length of the "stick"
 	CameraBoom->bUsePawnControlRotation = false; //Stops stick from moving for top down view
+	CameraBoom->SetRelativeRotation(FRotator(-45.0f, -90.0f, 0.0f));
+	CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 60.0f));
 
 	//Camera
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
 	Camera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); //Attach camera to the end of the stick of the boom
 	Camera->bUsePawnControlRotation = false; //Prevents camera itself from rotating.
 
-	//Cube
-	SpawnerCube = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpawnerCube"));
-	SpawnerCube->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -65,7 +64,7 @@ void APlayerAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAxis("MoveBackward", this, &APlayerAvatar::MoveBackward);
 	PlayerInputComponent->BindAxis("MoveLeft", this, &APlayerAvatar::MoveLeft);
 	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerAvatar::MoveRight);
-	//Mouse Turning
+	//Proper Movement
 }
 
 //Camera Handling--------------------------------------------------------------
@@ -91,7 +90,7 @@ void APlayerAvatar::MoveForward(float value)
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 		//Get forward vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(Direction, value);
+		AddMovementInput(Direction, 5);
 	} //end if
 }
 
@@ -129,4 +128,11 @@ void APlayerAvatar::MoveRight(float value)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		AddMovementInput(Direction, value);
 	} //end if
+}
+
+void APlayerAvatar::Move(float value)
+{
+	if (Controller && value) {
+		//Get piece direction
+	}
 }

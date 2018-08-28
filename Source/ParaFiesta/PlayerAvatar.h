@@ -45,6 +45,7 @@ public:
 	void MoveBackward(float value);
 	void MoveLeft(float value);
 	void MoveRight(float value);
+	void Move(float value);
 
 private:
 	int MAX_CAMERA_DISTANCE = 800;
