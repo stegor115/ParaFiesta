@@ -31,6 +31,8 @@ class PARAFIESTA_API ABoardSpot : public AActor
 {
 	GENERATED_BODY()
 
+	//UProperties
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Enum, meta = (AllowPrivateAccess = "true"))
 	EBoardPiece BoardPiece;
 
@@ -55,6 +57,16 @@ class PARAFIESTA_API ABoardSpot : public AActor
 
 	UPROPERTY(VisibleAnywhere, BluePrintReadWrite, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* TriggerBlock;
+
+	//UFunctions
+
+	//Overlap
+	UFUNCTION()
+	void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
+
+	UFUNCTION()
+	void EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
 public:	
 	// Sets default values for this actor's properties
@@ -68,6 +80,13 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	
-	
+	//Gets
+	EDirection GetDirection();
+	bool GetOverlap();
+	//Functionality
+	void MoreToMove(AActor* OverlappingActor);
+
+private:
+	bool overlapped = false; 
+	EDirection direction = EDirection::E_Left;
 };

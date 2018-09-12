@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BoardSpot.h"
+#include "PlayerAvatar.h"
 //Components
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
@@ -61,6 +62,8 @@ ABoardSpot::ABoardSpot()
 	TriggerBlock->SetupAttachment(RootComponent);
 	TriggerBlock->SetRelativeLocation(FVector(0.0f, 0.0f, 90.0f));
 	TriggerBlock->SetRelativeScale3D(FVector(2.0f, 2.0f, 1.0f));
+	TriggerBlock->OnComponentBeginOverlap.AddDynamic(this, &ABoardSpot::BeginOverlap);
+	TriggerBlock->OnComponentEndOverlap.AddDynamic(this, &ABoardSpot::EndOverlap);
 
 }
 
@@ -78,3 +81,29 @@ void ABoardSpot::Tick(float DeltaTime)
 
 }
 
+void ABoardSpot::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
+{
+	overlapped = true;
+}
+
+void ABoardSpot::EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	overlapped = false;
+}
+
+EDirection ABoardSpot::GetDirection()
+{
+	return direction;
+}
+
+bool ABoardSpot::GetOverlap()
+{
+	return overlapped;
+}
+
+void ABoardSpot::MoreToMove(AActor* OverlappingActor)
+{
+	APlayerAvatar* myPlayer = Cast<APlayerAvatar>(OverlappingActor);
+	myPlayer->Move(this->GetDirection());
+}

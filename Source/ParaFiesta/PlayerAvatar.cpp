@@ -8,6 +8,7 @@
 #include "Components/InputComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
 // Sets default values
 APlayerAvatar::APlayerAvatar()
@@ -40,7 +41,7 @@ APlayerAvatar::APlayerAvatar()
 void APlayerAvatar::BeginPlay()
 {
 	Super::BeginPlay();
-
+	StartMove();
 }
 
 // Called every frame
@@ -56,14 +57,15 @@ void APlayerAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	//Actions
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("TestMoveOne", IE_Pressed, this, &APlayerAvatar::TestMoveOne);
 	//Camera Handling
 	PlayerInputComponent->BindAction("ZoomOut", IE_Pressed, this, &APlayerAvatar::ZoomOut);
 	PlayerInputComponent->BindAction("ZoomIn", IE_Pressed, this, &APlayerAvatar::ZoomIn);
 	//Basic Movement
-	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerAvatar::MoveForward);
-	PlayerInputComponent->BindAxis("MoveBackward", this, &APlayerAvatar::MoveBackward);
-	PlayerInputComponent->BindAxis("MoveLeft", this, &APlayerAvatar::MoveLeft);
-	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerAvatar::MoveRight);
+	//PlayerInputComponent->BindAxis("MoveForward", this, &APlayerAvatar::MoveForward);
+	//PlayerInputComponent->BindAxis("MoveBackward", this, &APlayerAvatar::MoveBackward);
+	//PlayerInputComponent->BindAxis("MoveLeft", this, &APlayerAvatar::MoveLeft);
+	//PlayerInputComponent->BindAxis("MoveRight", this, &APlayerAvatar::MoveRight);
 	//Proper Movement
 }
 
@@ -82,6 +84,7 @@ void APlayerAvatar::ZoomIn()
 
 }
 //Movement---------------------------------------------------------------------
+/*
 void APlayerAvatar::MoveForward(float value)
 {
 	if (Controller && value) {
@@ -129,10 +132,73 @@ void APlayerAvatar::MoveRight(float value)
 		AddMovementInput(Direction, value);
 	} //end if
 }
+*/
 
-void APlayerAvatar::Move(float value)
+void APlayerAvatar::StartMove()
 {
-	if (Controller && value) {
-		//Get piece direction
-	}
+	if (moves != 0) {
+		TArray<AActor*> foundActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABoardSpot::StaticClass(), foundActors);
+
+		for (int i = 0; i != foundActors.Num(); ++i) { //Iterate through the array of found actors
+			ABoardSpot* mySpot = Cast<ABoardSpot>(foundActors[i]);
+			if (mySpot->GetOverlap()) {
+				mySpot->MoreToMove(this);
+				break;
+			} //end if
+			//UE_LOG(LogTemp, Warning, TEXT("Test"));
+		}//end for
+
+	} //end if
 }
+
+void APlayerAvatar::TestMoveOne() {
+	UE_LOG(LogTemp, Warning, TEXT("Test"));
+	moves = 1;
+	StartMove();
+}
+
+void APlayerAvatar::Move(EDirection direction)
+{
+	FVector newLocation; //Used to modify positions
+	FRotator newRotation; //Used to modify rotation
+	switch (direction) { //Figure out what direction to move in
+	case EDirection::E_Up:
+		newLocation = this->GetActorLocation() - FVector(0.0f, 200.0f, 0.0f);
+		newRotation = FRotator(0.0f, 0.0f, 180.0f);
+		this->TeleportTo(newLocation, newRotation);
+		break;
+	case EDirection::E_Down:
+		newLocation = this->GetActorLocation() + FVector(0.0f, 200.0f, 0.0f);
+		newRotation = FRotator(0.0f, 0.0f, 0.0f);
+		this->TeleportTo(newLocation, newRotation);
+		break;
+	case EDirection::E_Right:
+		newLocation = this->GetActorLocation() + FVector(0.0f, 200.0f, 0.0f);
+		newRotation = FRotator(0.0f, 0.0f, 270.0f);
+		this->TeleportTo(newLocation, newRotation);
+		break;
+	case EDirection::E_Left:
+		newLocation = this->GetActorLocation() - FVector(0.0f, 200.0f, 0.0f);
+		newRotation = FRotator(0.0f, 0.0f, 90.0f);
+		this->TeleportTo(newLocation, newRotation);
+		break;
+	case EDirection::E_Pause: //Pause as in Pause to choose direction
+		//Not implemented
+		break;
+	default:
+		//Never should happen
+		break;
+	} //end switch
+
+	moves--;
+
+	if (moves != 0) {
+		TArray<AActor*> overlapActors;
+		GetOverlappingActors(overlapActors, ABoardSpot::StaticClass());
+		for (int i = 0; i != overlapActors.Num(); ++i) {
+			ABoardSpot* mySpot = Cast<ABoardSpot>(overlapActors[i]);
+			mySpot->MoreToMove(this);
+		} //end for
+	} //end if
+} //end Move

@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "BoardSpot.h"
 #include "PlayerAvatar.generated.h"
+
 
 UCLASS()
 class PARAFIESTA_API APlayerAvatar : public ACharacter
@@ -41,13 +43,16 @@ public:
 	void ZoomOut();
 	void ZoomIn();
 	//Movement
-	void MoveForward(float value);
-	void MoveBackward(float value);
-	void MoveLeft(float value);
-	void MoveRight(float value);
-	void Move(float value);
+	//void MoveForward(float value);
+	//void MoveBackward(float value);
+	//void MoveLeft(float value);
+	//void MoveRight(float value);
+	void StartMove();
+	void TestMoveOne();
+	void Move(EDirection direction);
 
 private:
 	int MAX_CAMERA_DISTANCE = 800;
 	int MIN_CAMERA_DISTANCE = 50;
+	int moves = 1;
 };
