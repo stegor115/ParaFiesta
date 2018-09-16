@@ -165,7 +165,7 @@ void APlayerAvatar::Move(EDirection direction)
 	switch (direction) { //Figure out what direction to move in
 	case EDirection::E_Up:
 		newLocation = this->GetActorLocation() - FVector(0.0f, 200.0f, 0.0f);
-		newRotation = FRotator(0.0f, 0.0f, 180.0f);
+		newRotation = FRotator(0.0f, 180.0f, 0.0f);
 		this->TeleportTo(newLocation, newRotation);
 		break;
 	case EDirection::E_Down:
@@ -174,13 +174,13 @@ void APlayerAvatar::Move(EDirection direction)
 		this->TeleportTo(newLocation, newRotation);
 		break;
 	case EDirection::E_Right:
-		newLocation = this->GetActorLocation() + FVector(0.0f, 200.0f, 0.0f);
-		newRotation = FRotator(0.0f, 0.0f, 270.0f);
+		newLocation = this->GetActorLocation() + FVector(200.0f, 0.0f, 0.0f);
+		newRotation = FRotator(0.0f, 270.0f, 0.0f);
 		this->TeleportTo(newLocation, newRotation);
 		break;
 	case EDirection::E_Left:
-		newLocation = this->GetActorLocation() - FVector(0.0f, 200.0f, 0.0f);
-		newRotation = FRotator(0.0f, 0.0f, 90.0f);
+		newLocation = this->GetActorLocation() - FVector(200.0f, 0.0f, 0.0f);
+		newRotation = FRotator(0.0f, 90.0f, 0.0f);
 		this->TeleportTo(newLocation, newRotation);
 		break;
 	case EDirection::E_Pause: //Pause as in Pause to choose direction

@@ -54,5 +54,5 @@ public:
 private:
 	int MAX_CAMERA_DISTANCE = 800;
 	int MIN_CAMERA_DISTANCE = 50;
-	int moves = 1;
+	int moves = 12;
 };
