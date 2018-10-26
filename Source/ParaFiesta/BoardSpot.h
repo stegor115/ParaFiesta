@@ -82,11 +82,11 @@ public:
 
 	//Gets
 	EDirection GetDirection();
+	EBoardPiece GetType();
 	bool GetOverlap();
 	//Functionality
 	void MoreToMove(AActor* OverlappingActor);
 
 private:
 	bool overlapped = false; 
-	EDirection direction = EDirection::E_Left;
 };

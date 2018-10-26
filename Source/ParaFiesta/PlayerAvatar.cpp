@@ -153,7 +153,6 @@ void APlayerAvatar::StartMove()
 }
 
 void APlayerAvatar::TestMoveOne() {
-	UE_LOG(LogTemp, Warning, TEXT("Test"));
 	moves = 1;
 	StartMove();
 }
@@ -164,21 +163,25 @@ void APlayerAvatar::Move(EDirection direction)
 	FRotator newRotation; //Used to modify rotation
 	switch (direction) { //Figure out what direction to move in
 	case EDirection::E_Up:
+		UE_LOG(LogTemp, Warning, TEXT("Up"));
 		newLocation = this->GetActorLocation() - FVector(0.0f, 200.0f, 0.0f);
 		newRotation = FRotator(0.0f, 180.0f, 0.0f);
 		this->TeleportTo(newLocation, newRotation);
 		break;
 	case EDirection::E_Down:
+		UE_LOG(LogTemp, Warning, TEXT("Down"));
 		newLocation = this->GetActorLocation() + FVector(0.0f, 200.0f, 0.0f);
 		newRotation = FRotator(0.0f, 0.0f, 0.0f);
 		this->TeleportTo(newLocation, newRotation);
 		break;
 	case EDirection::E_Right:
+		UE_LOG(LogTemp, Warning, TEXT("Right"));
 		newLocation = this->GetActorLocation() + FVector(200.0f, 0.0f, 0.0f);
 		newRotation = FRotator(0.0f, 270.0f, 0.0f);
 		this->TeleportTo(newLocation, newRotation);
 		break;
 	case EDirection::E_Left:
+		UE_LOG(LogTemp, Warning, TEXT("Left"));
 		newLocation = this->GetActorLocation() - FVector(200.0f, 0.0f, 0.0f);
 		newRotation = FRotator(0.0f, 90.0f, 0.0f);
 		this->TeleportTo(newLocation, newRotation);

@@ -94,7 +94,12 @@ void ABoardSpot::EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 
 EDirection ABoardSpot::GetDirection()
 {
-	return direction;
+	return Direction;
+}
+
+EBoardPiece ABoardSpot::GetType()
+{
+	return BoardPiece;
 }
 
 bool ABoardSpot::GetOverlap()
