@@ -49,10 +49,12 @@ public:
 	//void MoveRight(float value);
 	void StartMove();
 	void TestMoveOne();
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+		void GetDice(int diceResult);
 	void Move(EDirection direction);
 
 private:
 	int MAX_CAMERA_DISTANCE = 800;
 	int MIN_CAMERA_DISTANCE = 50;
-	int moves = 0; //12 used for testing the turn
+	int moves = 0;
 };

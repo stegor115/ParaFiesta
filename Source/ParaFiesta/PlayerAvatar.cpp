@@ -157,6 +157,11 @@ void APlayerAvatar::TestMoveOne() {
 	StartMove();
 }
 
+void APlayerAvatar::GetDice(int diceResult) { //Callable from blueprint
+	moves = diceResult;
+	StartMove();
+}
+
 void APlayerAvatar::Move(EDirection direction)
 {
 	FVector newLocation; //Used to modify positions
